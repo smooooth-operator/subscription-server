@@ -12,7 +12,7 @@ public:
   ~PipeHandler();
 
     bool connectToServer();
-    void sendMessage(const QString& message);
+    bool sendMessage(const QString& message);
     void readMessage();
 
 signals:

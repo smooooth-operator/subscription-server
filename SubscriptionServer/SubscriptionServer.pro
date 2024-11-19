@@ -10,9 +10,11 @@ CONFIG += c++17
 
 SOURCES += \
     main.cpp \
+    pipehandler.cpp \
     subsriptionserver.cpp
 
 HEADERS += \
+    pipehandler.h \
     subsriptionserver.h
 
 FORMS += \
