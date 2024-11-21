@@ -83,3 +83,33 @@ vector<string> GetWeatherInfo() {
     }
     return weatherInfo;
 }
+vector<string> GetCurrencyInfo() {
+    vector<string> currencyInfo; // Вектор, в якому 2 поля (курс долара і євро)
+    std::wstring server = L"bank.gov.ua";
+    std::wstring uri = L"/NBUStatService/v1/statdirectory/exchange?json";
+
+    std::string response = HttpGetRequest(server, uri);
+
+    if (!response.empty()) {
+        std::string usdRate, eurRate;
+
+        size_t usdPos = response.find("\"cc\":\"USD\"");
+        if (usdPos != std::string::npos) {
+            usdRate = FindJsonValue(response.substr(usdPos - 50, 100), "rate");
+        }
+
+        size_t eurPos = response.find("\"cc\":\"EUR\"");
+        if (eurPos != std::string::npos) {
+            eurRate = FindJsonValue(response.substr(eurPos - 50, 100), "rate");
+        }
+
+        currencyInfo.push_back(usdRate + " UAH"); // Курс долара
+        currencyInfo.push_back(eurRate + " UAH"); // Курс євро
+    }
+    else {
+        currencyInfo.push_back("-");
+        currencyInfo.push_back("-");
+    }
+
+    return currencyInfo;
+}
