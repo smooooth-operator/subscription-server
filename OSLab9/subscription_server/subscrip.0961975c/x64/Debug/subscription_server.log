@@ -1,0 +1,8 @@
+﻿  subscription_server.cpp
+G:\OSLab9\subscription_server\subscription_server.cpp(174,76): warning C4267: 'argument': conversion from 'size_t' to 'DWORD', possible loss of data
+G:\OSLab9\subscription_server\subscription_server.cpp(248,63): warning C4267: 'argument': conversion from 'size_t' to 'DWORD', possible loss of data
+G:\OSLab9\subscription_server\subscription_server.cpp(259,63): warning C4267: 'argument': conversion from 'size_t' to 'DWORD', possible loss of data
+G:\OSLab9\subscription_server\subscription_server.cpp(271,63): warning C4267: 'argument': conversion from 'size_t' to 'DWORD', possible loss of data
+  subscription_server.vcxproj -> G:\OSLab9\subscription_server\x64\Debug\subscription_server.exe
+  'pwsh.exe' is not recognized as an internal or external command,
+  operable program or batch file.
