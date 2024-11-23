@@ -3,7 +3,9 @@
 #define PIPEHANDLER_H
 
 #include <QObject>
+#include <QDebug>
 #include <windows.h>
+
 
 class PipeHandler : public QObject {
   Q_OBJECT
@@ -14,6 +16,7 @@ public:
     bool connectToServer();
     bool sendMessage(const QString& message);
     void readMessage();
+    void switchSubscription(const QString& newSubscription);
 
 signals:
     void messageReceived(const QString &message);
@@ -22,6 +25,7 @@ signals:
 private:
     HANDLE pipe;
     bool connected;
+    QString currentSubscription;
 };
 
 #endif // PIPEHANDLER_H

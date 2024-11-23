@@ -193,7 +193,7 @@ void WeatherUpdateService() {
             << "Humidity: " << weatherInfo[2] << "\n"
             << "Weather: " << weatherInfo[3] << "\n";
         BroadcastToClients(oss.str(), "weather");
-        std::this_thread::sleep_for(std::chrono::seconds(10)); // Затримка для тестування
+        std::this_thread::sleep_for(std::chrono::seconds(3600)); // Затримка для тестування
     }
 }
 
@@ -206,7 +206,7 @@ void CurrencyUpdateService() {
             << "USD: " << currencyInfo[0] << "\n"
             << "EUR: " << currencyInfo[1] << "\n";
         BroadcastToClients(oss.str(), "currency");
-        std::this_thread::sleep_for(std::chrono::seconds(10)); // Затримка для тестування
+        std::this_thread::sleep_for(std::chrono::hours(24)); // Затримка для тестування
     }
 }
 
@@ -219,7 +219,7 @@ void StockUpdateService() {
             << "High: " << stockInfo[1] << "\n"
             << "Low: " << stockInfo[2] << "\n";
         BroadcastToClients(oss.str(), "stock");
-        std::this_thread::sleep_for(std::chrono::seconds(10)); // Затримка для тестування
+        std::this_thread::sleep_for(std::chrono::seconds(60)); // Затримка для тестування
     }
 }
 
@@ -233,6 +233,12 @@ void HandleClient(HANDLE hPipe) {
         std::string command(buffer);
 
         std::lock_guard<std::mutex> lock(clientMutex);
+
+        // Remove client from previous subscription if it exists
+        auto it = clients.find({ hPipe, "" }); // Find the client, regardless of the type
+        if (it != clients.end()) {
+            clients.erase(it); // Remove from the previous type
+        }
 
         if (command == "subscribe:weather") {
             clients.insert({ hPipe, "weather" });

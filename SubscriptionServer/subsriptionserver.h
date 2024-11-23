@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "pipehandler.h"
+#include <QTimer>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -19,13 +20,16 @@ public:
     ~SubsriptionServer();
 
 private slots:
-    //void on_messageReceived();
+    void on_messageReceived(const QString &message);
+    void handleMessage(const QString &message);
     void on_connectionStatusChanged(const QString& message);
     void on_pushButton_subscribe_clicked();
-    void on_pushButton_unsubscribe_clicked();
+    void clearUI();
 
 private:
     Ui::SubsriptionServer *ui;
     PipeHandler *pipeHandler;
+    QTimer* messagePollingTimer;
+    //QThread* workerThread;
 };
 #endif // SUBSRIPTIONSERVER_H

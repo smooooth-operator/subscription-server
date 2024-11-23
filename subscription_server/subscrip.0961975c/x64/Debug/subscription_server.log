@@ -1,0 +1,6 @@
+﻿  subscription_server.cpp
+D:\uni\3rd semester\OS\lab(174,76): warning C4267: 'argument': conversion from 'size_t' to 'DWORD', possible loss of data
+D:\uni\3rd semester\OS\lab(254,63): warning C4267: 'argument': conversion from 'size_t' to 'DWORD', possible loss of data
+D:\uni\3rd semester\OS\lab(265,63): warning C4267: 'argument': conversion from 'size_t' to 'DWORD', possible loss of data
+D:\uni\3rd semester\OS\lab(277,63): warning C4267: 'argument': conversion from 'size_t' to 'DWORD', possible loss of data
+  subscription_server.vcxproj -> D:\uni\3rd semester\OS\lab#9\subscription-server\subscription_server\x64\Debug\subscription_server.exe

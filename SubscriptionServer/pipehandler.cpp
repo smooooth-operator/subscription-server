@@ -2,8 +2,12 @@
 #include <QDebug>
 #include <QString>
 #include <windows.h>
+#include <QMutex>
+#include <QThread>
+#include <QTimer>
 
-const wchar_t* PIPE_NAME = L"\\\\.\\pipe\\SubscriptionServerPipe";
+QMutex mutex;
+const wchar_t* PIPE_NAME = L"\\\\.\\pipe\\InfoServicePipe";
 
 PipeHandler::PipeHandler(QObject *parent)
     :QObject(parent), pipe(INVALID_HANDLE_VALUE), connected(false) {}
@@ -11,10 +15,18 @@ PipeHandler::PipeHandler(QObject *parent)
 PipeHandler::~PipeHandler() {
     if(connected) {
         CloseHandle(pipe);
+        connected = false;
     }
 }
 
 bool PipeHandler::connectToServer() {
+    if (pipe != INVALID_HANDLE_VALUE) {
+        CloseHandle(pipe);
+        pipe = INVALID_HANDLE_VALUE;
+    }
+
+    qDebug() << "Attempting to connect to pipe...";
+
     pipe = CreateFile(PIPE_NAME, GENERIC_READ | GENERIC_WRITE,
                       0, NULL, OPEN_EXISTING, 0, NULL);
 
@@ -26,10 +38,19 @@ bool PipeHandler::connectToServer() {
 
     connected = true;
     emit connectionStatusChanged("Connected to server.");
+
+    //readMessage();
+
+    // Use a timer to poll the pipe periodically
+    // QTimer* timer = new QTimer(this);
+    // connect(timer, &QTimer::timeout, this, &PipeHandler::readMessage);
+    // timer->start(100); // Check every 100ms
+
     return true;
 }
 
 bool PipeHandler::sendMessage(const QString& message){
+    //QMutexLocker locker(&mutex);
     if (!connected || pipe == INVALID_HANDLE_VALUE) {
         emit connectionStatusChanged("Failed to send message: not connected to the server.");
         return false;
@@ -43,29 +64,72 @@ bool PipeHandler::sendMessage(const QString& message){
         return false;
     }
 
+    qDebug() << "Message sent successfully.";
     return true;
 }
 
 void PipeHandler::readMessage(){
-    if (connected) {
-        char buffer[512] = {0}; // Initialize the buffer to avoid garbage data.
+    QMutexLocker locker(&mutex);
+
+    if (!connected || pipe == INVALID_HANDLE_VALUE) {
+        emit connectionStatusChanged("Not connected or invalid pipe.");
+        return;
+    }
+
+    DWORD bytesAvailable = 0;
+    if (!PeekNamedPipe(pipe, NULL, 0, NULL, &bytesAvailable, NULL)) {
+        DWORD errorCode = GetLastError();
+        if (errorCode == ERROR_PIPE_NOT_CONNECTED) {
+            emit connectionStatusChanged("Pipe is not connected. Please reconnect.");
+            connected = false;
+            return;
+        }
+
+        emit connectionStatusChanged(QString("PeekNamedPipe failed. Error code: %1").arg(errorCode));
+        return;
+    }
+
+    if (bytesAvailable > 0) {
+        char buffer[512] = {0};
         DWORD bytesRead = 0;
 
-        if (ReadFile(pipe, buffer, sizeof(buffer) - 1, &bytesRead, NULL)) {
-            buffer[bytesRead] = '\0';
-            emit messageReceived(QString::fromStdString(buffer));
+        if (ReadFile(pipe, buffer, sizeof(buffer) - 1, &bytesRead, nullptr)) {
+            if (bytesRead > 0) {
+                buffer[bytesRead] = '\0';  // Null-terminate the string
+                emit messageReceived(QString::fromStdString(buffer));
+            } else {
+                qDebug() << "No data read.";
+            }
         } else {
             DWORD errorCode = GetLastError();
-             QString errorMessage = QString("Failed to read message. Error code: %1").arg(errorCode);
-
-            // Handle specific error codes for better diagnostics
-            if (errorCode == ERROR_BROKEN_PIPE) {
-                errorMessage = "The pipe was closed by the server.";
-            } else if (errorCode == ERROR_MORE_DATA) {
-                errorMessage = "Not enough data read. More data is available.";
-            }
-
-            emit connectionStatusChanged(errorMessage);  // Emit error message
+            emit connectionStatusChanged(QString("Failed to read message. Error code: %1").arg(errorCode));
         }
     }
+}
+
+
+void PipeHandler::switchSubscription(const QString& newSubscription){
+
+    // Disconnect the current subscription
+    QMutexLocker locker(&mutex);
+    if (connected && pipe != INVALID_HANDLE_VALUE) {
+        CloseHandle(pipe);
+        connected = false;
+    }
+
+    if (!connectToServer()) {
+        emit connectionStatusChanged("Failed to reconnect to server for new subscription.");
+        qDebug() << "Reconnection failed";
+        return;
+    }
+
+    // Send the new subscription message
+    //QString subscribeMessage = "subscribe:" + newSubscription;
+    if (!sendMessage(newSubscription)) {
+        emit connectionStatusChanged("Failed to send subscription message after reconnection.");
+        return;
+    }
+
+    emit connectionStatusChanged(QString("Subscribed to %1").arg(newSubscription));
+    qDebug() << "Switched subscription to: " << newSubscription;
 }

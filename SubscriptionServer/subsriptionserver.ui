@@ -18,59 +18,33 @@
     <property name="geometry">
      <rect>
       <x>60</x>
-      <y>20</y>
+      <y>30</y>
       <width>691</width>
-      <height>111</height>
+      <height>101</height>
      </rect>
     </property>
     <property name="title">
      <string>CHOOSE SUBSCRIPTION</string>
     </property>
-    <widget class="QPushButton" name="pushButton_unsubscribe">
+    <widget class="QPushButton" name="pushButton_subscribe">
      <property name="geometry">
       <rect>
        <x>510</x>
-       <y>70</y>
+       <y>60</y>
        <width>171</width>
        <height>31</height>
       </rect>
      </property>
      <property name="text">
-      <string>UNSUBSCRIBE</string>
+      <string>SUBSCRIBE</string>
      </property>
     </widget>
-    <widget class="QCheckBox" name="checkBox_stock">
-     <property name="geometry">
-      <rect>
-       <x>310</x>
-       <y>60</y>
-       <width>121</width>
-       <height>26</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Stock prices</string>
-     </property>
-    </widget>
-    <widget class="QCheckBox" name="checkBox_currency">
-     <property name="geometry">
-      <rect>
-       <x>170</x>
-       <y>60</y>
-       <width>101</width>
-       <height>26</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Currency</string>
-     </property>
-    </widget>
-    <widget class="QCheckBox" name="checkBox_weather">
+    <widget class="QRadioButton" name="radioButton_weather">
      <property name="geometry">
       <rect>
        <x>20</x>
        <y>60</y>
-       <width>101</width>
+       <width>112</width>
        <height>26</height>
       </rect>
      </property>
@@ -78,17 +52,30 @@
       <string>Weather</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="pushButton_subscribe">
+    <widget class="QRadioButton" name="radioButton_currency">
      <property name="geometry">
       <rect>
-       <x>510</x>
-       <y>30</y>
-       <width>171</width>
-       <height>31</height>
+       <x>180</x>
+       <y>60</y>
+       <width>112</width>
+       <height>26</height>
       </rect>
      </property>
      <property name="text">
-      <string>SUBSCRIBE</string>
+      <string>Currency</string>
+     </property>
+    </widget>
+    <widget class="QRadioButton" name="radioButton_stock">
+     <property name="geometry">
+      <rect>
+       <x>330</x>
+       <y>60</y>
+       <width>112</width>
+       <height>26</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Stock prices</string>
      </property>
     </widget>
    </widget>
@@ -149,12 +136,12 @@
       <item>
        <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>Wind:</string>
+         <string>Pressure:</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="lineEdit_wind"/>
+       <widget class="QLineEdit" name="lineEdit_pressure"/>
       </item>
      </layout>
     </widget>
@@ -233,7 +220,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="lineEdit_euro_2"/>
+       <widget class="QLineEdit" name="lineEdit_usd"/>
       </item>
      </layout>
     </widget>
@@ -244,39 +231,17 @@
       <x>560</x>
       <y>170</y>
       <width>191</width>
-      <height>191</height>
+      <height>231</height>
      </rect>
     </property>
     <property name="title">
-     <string>STOCK PRICES</string>
+     <string>STOCK PRICE</string>
     </property>
-    <widget class="QWidget" name="horizontalLayoutWidget_6">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>40</y>
-       <width>171</width>
-       <height>41</height>
-      </rect>
-     </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_6">
-      <item>
-       <widget class="QLabel" name="label_6">
-        <property name="text">
-         <string>Mercedes:</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="lineEdit_mercedes"/>
-      </item>
-     </layout>
-    </widget>
     <widget class="QWidget" name="horizontalLayoutWidget_7">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>90</y>
+       <y>80</y>
        <width>171</width>
        <height>41</height>
       </rect>
@@ -285,12 +250,12 @@
       <item>
        <widget class="QLabel" name="label_7">
         <property name="text">
-         <string>Oracle:</string>
+         <string>Current:</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="lineEdit_oracle"/>
+       <widget class="QLineEdit" name="lineEdit_stockCurrent"/>
       </item>
      </layout>
     </widget>
@@ -298,7 +263,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>140</y>
+       <y>130</y>
        <width>171</width>
        <height>41</height>
       </rect>
@@ -307,12 +272,44 @@
       <item>
        <widget class="QLabel" name="label_8">
         <property name="text">
-         <string>Ferrari:</string>
+         <string>High:</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="lineEdit_ferarri"/>
+       <widget class="QLineEdit" name="lineEdit_stockHigh"/>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QLineEdit" name="lineEdit_stockSymbol">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>40</y>
+       <width>169</width>
+       <height>28</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QWidget" name="horizontalLayoutWidget_9">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>180</y>
+       <width>171</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_9">
+      <item>
+       <widget class="QLabel" name="label_9">
+        <property name="text">
+         <string>Low:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="lineEdit_stockLow"/>
       </item>
      </layout>
     </widget>
