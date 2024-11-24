@@ -30,6 +30,6 @@ private:
     Ui::SubsriptionServer *ui;
     PipeHandler *pipeHandler;
     QTimer* messagePollingTimer;
-    //QThread* workerThread;
+    QThread* workerThread;
 };
 #endif // SUBSRIPTIONSERVER_H

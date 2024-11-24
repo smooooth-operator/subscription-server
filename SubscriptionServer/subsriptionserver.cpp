@@ -8,42 +8,44 @@
 
 SubsriptionServer::SubsriptionServer(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::SubsriptionServer),
-    pipeHandler(new PipeHandler(this))
+    , ui(new Ui::SubsriptionServer)
+    //pipeHandler(new PipeHandler(this))
 {
     ui->setupUi(this);
 
-    //workerThread = new QThread(this);
-    //pipeHandler = new PipeHandler(this);
+    workerThread = new QThread(this);
+    pipeHandler = new PipeHandler(this);
 
-    //pipeHandler->moveToThread(workerThread);
+    pipeHandler->moveToThread(workerThread);
 
-    //connect(workerThread, &QThread::started, pipeHandler, &PipeHandler::connectToServer, Qt::QueuedConnection);
+    connect(workerThread, &QThread::started, pipeHandler, &PipeHandler::connectToServer, Qt::QueuedConnection);
     connect(pipeHandler, &PipeHandler::connectionStatusChanged, this, &SubsriptionServer::on_connectionStatusChanged);
     connect(pipeHandler, &PipeHandler::messageReceived, this, &SubsriptionServer::on_messageReceived);
 
-    // connect(workerThread, &QThread::finished, workerThread, &QObject::deleteLater);
-    // connect(workerThread, &QThread::finished, pipeHandler, &QObject::deleteLater);
+    connect(workerThread, &QThread::finished, workerThread, &QObject::deleteLater);
+    connect(workerThread, &QThread::finished, pipeHandler, &QObject::deleteLater);
 
-    //workerThread->start();
-    // qDebug() << "Worker thread is running: " << workerThread->isRunning();
+    workerThread->start();
+    qDebug() << "Worker thread is running: " << workerThread->isRunning();
 
     messagePollingTimer = new QTimer(this);
     connect(messagePollingTimer, &QTimer::timeout, pipeHandler, &PipeHandler::readMessage);
 
-    if (pipeHandler->connectToServer()) {
-        ui->statusbar->showMessage("Connected to server.");
+    // if (pipeHandler->connectToServer()) {
+    //     ui->statusbar->showMessage("Connected to server.");
 
         // Start the polling timer after a successful connection
         messagePollingTimer->start(500); // Adjust the interval as needed
-    } else {
-        ui->statusbar->showMessage("Failed to connect to server.");
-        messagePollingTimer->stop();
-    }
+//     } else {
+//         ui->statusbar->showMessage("Failed to connect to server.");
+//         messagePollingTimer->stop();
+//     }
 }
 
-SubsriptionServer::~SubsriptionServer()
-{
+SubsriptionServer::~SubsriptionServer() {
+    workerThread->quit();  // Ensures that the thread is properly finished
+    workerThread->wait();
+    delete workerThread;
     delete ui;
 }
 
