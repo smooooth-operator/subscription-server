@@ -89,7 +89,7 @@
      </rect>
     </property>
     <property name="title">
-     <string>WEATHER</string>
+     <string>WEATHER IN LVIV</string>
     </property>
     <widget class="QLineEdit" name="lineEdit_generalWeather">
      <property name="geometry">
@@ -193,7 +193,7 @@
       <item>
        <widget class="QLabel" name="label_4">
         <property name="text">
-         <string>EURO:</string>
+         <string>EUR:</string>
         </property>
        </widget>
       </item>
